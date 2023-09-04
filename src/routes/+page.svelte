@@ -1,67 +1,33 @@
 <script>
-	import PackageInfo from './PackageInfo.svelte';
-	import Thing from './Thing.svelte';
+	import Outer from './Outer.svelte';
+	let m = { x: 0, y: 0 };
 
-	let count = 0;
-	let colours = new Set(['red', 'green', 'blue', 'yellow', 'violet', 'pink']);
-	function increment() {
-		count += 1;
+	function handleMove(e) {
+		m.x = e.clientX;
+		m.y = e.clientY;
 	}
 
-	let things = [
-		{ id: 1, name: 'apple' },
-		{ id: 2, name: 'banana' },
-		{ id: 3, name: 'carrot' },
-		{ id: 4, name: 'doughnut' },
-		{ id: 5, name: 'egg' }
-	];
-
-	function popThing() {
-		things = things.slice(1);
+	function handleMessage(e) {
+		console.log(e.detail);
 	}
 
-	let promised = new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve(1);
-		}, 2000);
-		setTimeout(() => {
-			reject(0);
-		}, 1000);
-	});
+	function handleClick() {
+		console.log('big btn clicked');
+	}
 </script>
 
-<p>Modify count</p>
+<div on:mousemove|once={handleMove}>
+	Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum accusantium odio, maiores eum,
+	similique, deleniti vel animi dolorum minima illo omnis doloribus aspernatur quibusdam ipsa
+	perspiciatis. Necessitatibus, qui laudantium cumque reprehenderit corrupti totam consequatur nam
+	similique ducimus veniam maxime tempora culpa illum quas est doloribus placeat possimus libero
+	nemo sequi, numquam molestiae provident temporibus nisi. Quaerat, neque facilis! Ad perspiciatis
+	hic dicta aliquam est provident placeat qui quae cupiditate perferendis, ipsa dolorem, officiis
+	deleniti aliquid minima nostrum nemo. Architecto exercitationem temporibus facere error, ex quam?
+	Maxime, dolor eveniet incidunt soluta corrupti ratione quae, dolore modi consequuntur corporis
+	perspiciatis ad? Laborum.
+</div>
 
-<button on:click={increment}>Clicked {count}</button>
+<p>The pointer is at {m.x} x {m.y}</p>
 
-{#if count > 10}
-	<p>This appears once count is &gt; 10</p>
-{:else if count > 5}
-	<p>Current value of count is {count}</p>
-{:else}
-	<p>Currnet value less than 5</p>
-{/if}
-
-{#each colours as colour, index}
-	<span style="background-color: {colour};padding: 5px;margin: 2px"
-		>{colour} index position {index}</span
-	>
-{/each}
-
-<button on:click={popThing}>Pop</button>
-{#each things as item (item.id)}
-	// key is very important
-	<Thing name={item.name} />
-{/each}
-
-{#await promised}
-	<p>loading...</p>
-{:then val}
-	<p>The return value is {val}</p>
-{:catch error}
-	<p>Error error code: {error}</p>
-{/await}
-
-<!-- {#await promised then val}
-	<p>The return value is {val}</p>
-{/await} -->
+<Outer on:msg={handleMessage} on:click={handleClick} />
