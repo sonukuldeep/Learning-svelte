@@ -1,25 +1,38 @@
 <script>
-	let name = '<s>Svelte</s>';
-	let src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${name.toLowerCase()}`;
-	import Nested from './Nested.svelte';
+	let count = 0;
+
+	let obj = [0, 1, 2];
+	// let objInMap = new Set();
+
+	function modufyObject() {
+		// obj.push('d'); // this will not work
+		// obj = obj; // unless we assign it
+		obj = [...obj, obj.length]; // how its done
+
+		// objInMap.add(0); //this wont even work even with assignment
+		// objInMap = objInMap;
+	}
+
+	function increment() {
+		// reactivie assignment
+		count += 1;
+	}
+
+	// reactive declarations.
+	$: doubled = count * 2;
+
+	// reactive statements.
+	$: if (count !== 0) {
+		console.log('Count is ' + count);
+		console.log('Double of count ' + doubled);
+	}
 </script>
 
-<h1>Hello, {name}</h1>
-<p>Hello, {@html name}</p>
+<p>Reactivity</p>
 
-<img {src} alt="A dancing man" />
+<p>Doubled value of count is {doubled}</p>
 
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores nobis veniam dolores</p>
+<button on:click={increment}>Clicked {count}</button>
 
-<Nested />
-
-<style>
-	img {
-		width: 200px;
-	}
-	p {
-		color: goldenrod;
-		font-family: 'Comic Sans MS', cursive;
-		font-size: 2em;
-	}
-</style>
+<p>{JSON.stringify(obj)}</p>
+<button on:click={modufyObject}>Modify obj</button>
