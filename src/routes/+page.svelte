@@ -1,73 +1,57 @@
 <script>
-	import { fade, fly } from 'svelte/transition';
-	import { elasticOut } from 'svelte/easing';
-	import TypewritingEffect from './TypewritingEffect.svelte';
-	import GlobalTransition from './GlobalTransition.svelte';
-	function spin(_, { duration }) {
-		return {
-			duration,
-			css: (t) => {
-				const eased = elasticOut(t);
-				return `
-				transform: scale(${eased}) rotate(${eased * 1000}deg);
-				color: hsl(
-					${Math.trunc(t * 360)},
-					${Math.min(100, 1000 * (1 - t))}%,
-					${Math.min(50, 500 * (1 - t))}%
-				)
-				`;
-			}
-		};
-	}
-	let fadeTransition = true;
-	let flyTransition = true;
-	let inOut = false;
+	import { createTodoStore } from './todo';
+	import TodoList from './TodoList.svelte';
 
-	let customTransition = false;
+	const todos = createTodoStore([
+		{ done: false, description: 'write some docs' },
+		{ done: false, description: 'start writing blog post' },
+		{ done: true, description: 'buy some milk' },
+		{ done: false, description: 'mow the lawn' },
+		{ done: false, description: 'feed the turtle' },
+		{ done: false, description: 'fix some bugs' }
+	]);
 </script>
 
-<input type="checkbox" bind:checked={fadeTransition} />
+<div class="board">
+	<input
+		placeholder="what needs to be done?"
+		on:keydown={(e) => {
+			if (e.key === 'Enter') {
+				todos.add(e.currentTarget.value);
+				e.currentTarget.value = '';
+			}
+		}}
+	/>
 
-{#if fadeTransition}
-	<p transition:fade>Toggle to see transition</p>
-{/if}
-
-<input type="checkbox" bind:checked={flyTransition} />
-
-{#if flyTransition}
-	<p transition:fly={{ y: 200, duration: 2000 }}>Toggle to see transition</p>
-{/if}
-
-<input type="checkbox" bind:checked={inOut} />
-
-{#if inOut}
-	<p in:fade out:fly={{ y: 200, duration: 2000 }}>Toggle to see transition</p>
-{/if}
-
-<br />
-<input type="checkbox" bind:checked={customTransition} />
-
-{#if customTransition}
-	<div class="centered" in:spin={{ duration: 8000 }} out:fade>
-		<span>transitions!</span>
+	<div class="todo">
+		<h2>todo</h2>
+		<TodoList store={todos} done={false} />
 	</div>
-{/if}
-<br />
-<TypewritingEffect />
-<br />
-<GlobalTransition />
+
+	<div class="done">
+		<h2>done</h2>
+		<TodoList store={todos} done={true} />
+	</div>
+</div>
 
 <style>
-	.centered {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%);
+	.board {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-column-gap: 1em;
+		max-width: 36em;
+		margin: 0 auto;
 	}
 
-	span {
-		position: absolute;
-		transform: translate(-50%, -50%);
-		font-size: 4em;
+	.board > input {
+		font-size: 1.4em;
+		grid-column: 1/3;
+		padding: 0.5em;
+		margin: 0 0 1rem 0;
+	}
+
+	h2 {
+		font-size: 2em;
+		font-weight: 200;
 	}
 </style>
