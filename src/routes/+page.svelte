@@ -1,34 +1,23 @@
 <script>
-	// import { onDestroy } from 'svelte';
-	import Increment from './Increment.svelte';
-	import Reset from './Reset.svelte';
-	import { count } from './stores';
-	import { time, elapsed } from './readOnlyStore';
-	import { name } from './nameStore';
-	// let value = 0;
+	import { tweened } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
+	import Spring from './Spring.svelte';
 
-	// const unsubscribe = count.subscribe((val) => (value = val));
-	// onDestroy(unsubscribe);
-
-	const formatter = new Intl.DateTimeFormat('en', {
-		hour12: true,
-		hour: 'numeric',
-		minute: '2-digit',
-		second: '2-digit'
-	});
+	const progress = tweened(0, { easing: cubicOut, duration: 400 });
 </script>
 
-<p>Current value of count is {$count}</p>
-<!-- <p>Current value of count is {value}</p> -->
+<progress value={$progress} />
+<br />
+<button on:click={() => progress.set(0)}>0%</button>
+<button on:click={() => progress.set(0.25)}>25%</button>
+<button on:click={() => progress.set(0.5)}>50%</button>
+<button on:click={() => progress.set(0.75)}>75%</button>
+<button on:click={() => progress.set(1)}>100%</button>
 
-<Increment />
+<Spring />
 
-<Reset />
-
-<p>Current time is {formatter.format($time)}</p>
-
-<p>The page has been open for {$elapsed}</p>
-
-<p>Name is {$name}</p>
-
-<input type="text" bind:value={$name} />
+<style>
+	progress {
+		width: 600px;
+	}
+</style>
