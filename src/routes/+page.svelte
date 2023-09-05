@@ -1,24 +1,34 @@
 <script>
-	import { onMount, beforeUpdate, afterUpdate } from 'svelte';
-	onMount(() => {
-		const canvas = document.querySelector('canvas');
-		const ctx = canvas?.getContext('2d');
+	// import { onDestroy } from 'svelte';
+	import Increment from './Increment.svelte';
+	import Reset from './Reset.svelte';
+	import { count } from './stores';
+	import { time, elapsed } from './readOnlyStore';
+	import { name } from './nameStore';
+	// let value = 0;
 
-		ctx?.fillRect(10, 10, 100, 100);
-	});
-	beforeUpdate(() => {
-		const div = document.querySelector('div');
-		if (!div) return;
-		div.textContent = 'Hello world';
-	});
+	// const unsubscribe = count.subscribe((val) => (value = val));
+	// onDestroy(unsubscribe);
 
-	afterUpdate(() => {
-		const div = document.querySelector('div');
-		if (!div) return;
-		div.style.color = 'red';
+	const formatter = new Intl.DateTimeFormat('en', {
+		hour12: true,
+		hour: 'numeric',
+		minute: '2-digit',
+		second: '2-digit'
 	});
 </script>
 
-<canvas />
+<p>Current value of count is {$count}</p>
+<!-- <p>Current value of count is {value}</p> -->
 
-<div />
+<Increment />
+
+<Reset />
+
+<p>Current time is {formatter.format($time)}</p>
+
+<p>The page has been open for {$elapsed}</p>
+
+<p>Name is {$name}</p>
+
+<input type="text" bind:value={$name} />
