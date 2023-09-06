@@ -1,19 +1,9 @@
 <script>
-	let user = {
-		fname: 'Ada',
-		lname: 'zarial'
-	};
+	import CompoundBinding from './CompoundBinding.svelte';
+
+	let name;
+	$: lastName = name + 'nazi';
 </script>
 
-<label
-	>First name
-	<input type="text" bind:value={user.fname} />
-</label>
-<label
-	>Lastname
-	<input type="text" bind:value={user.lname} />
-</label>
-
-{@debug user}
-
-<h2>Hello from {user.fname}</h2>
+<h1>{lastName}</h1>
+<CompoundBinding bind:value={name} />
