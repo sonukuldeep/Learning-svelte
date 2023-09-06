@@ -9,6 +9,9 @@
 		{ color: 'blue', component: Blue }
 	];
 	let selected = options[0];
+
+	const optionsElements = ['h1', 'h2', 'h3', 'p', 'marquee'];
+	let selectedElement = optionsElements[0];
 </script>
 
 <select bind:value={selected}>
@@ -22,3 +25,11 @@
 {#each options as item}
 	<svelte:component this={item.component} />
 {/each}
+
+<select bind:value={selectedElement}>
+	{#each optionsElements as option}
+		<option value={option}>{option}</option>
+	{/each}
+</select>
+
+<svelte:element this={selectedElement}>Hello world</svelte:element>
