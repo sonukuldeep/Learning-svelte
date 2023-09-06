@@ -1,35 +1,19 @@
 <script>
-	import Red from './Red.svelte';
-	import Green from './Green.svelte';
-	import Blue from './Blue.svelte';
-
-	const options = [
-		{ color: 'red', component: Red },
-		{ color: 'green', component: Green },
-		{ color: 'blue', component: Blue }
-	];
-	let selected = options[0];
-
-	const optionsElements = ['h1', 'h2', 'h3', 'p', 'marquee'];
-	let selectedElement = optionsElements[0];
+	let user = {
+		fname: 'Ada',
+		lname: 'zarial'
+	};
 </script>
 
-<select bind:value={selected}>
-	{#each options as item}
-		<option value={item}>{item.color}</option>
-	{/each}
-</select>
+<label
+	>First name
+	<input type="text" bind:value={user.fname} />
+</label>
+<label
+	>Lastname
+	<input type="text" bind:value={user.lname} />
+</label>
 
-<svelte:component this={selected.component} />
+{@debug user}
 
-{#each options as item}
-	<svelte:component this={item.component} />
-{/each}
-
-<select bind:value={selectedElement}>
-	{#each optionsElements as option}
-		<option value={option}>{option}</option>
-	{/each}
-</select>
-
-<svelte:element this={selectedElement}>Hello world</svelte:element>
+<h2>Hello from {user.fname}</h2>
