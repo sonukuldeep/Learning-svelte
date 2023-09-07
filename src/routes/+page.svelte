@@ -1,9 +1,59 @@
 <script>
-	import CompoundBinding from './CompoundBinding.svelte';
-
-	let name;
-	$: lastName = name + 'nazi';
+	export let data;
 </script>
 
-<h1>{lastName}</h1>
-<CompoundBinding bind:value={name} />
+<div class="centered">
+	<h1>todos</h1>
+	<form method="post">
+		<label>
+			Add a todo:
+			<input type="text" name="description" autocomplete="off" />
+		</label>
+	</form>
+</div>
+
+<ul class="todos">
+	{#each data.todos as todo (todo.id)}
+		<li>
+			{todo.description}
+		</li>
+	{/each}
+</ul>
+
+<style>
+	.centered {
+		max-width: 20em;
+		margin: 0 auto;
+	}
+
+	label {
+		width: 100%;
+	}
+
+	input {
+		flex: 1;
+	}
+
+	span {
+		flex: 1;
+	}
+
+	button {
+		border: none;
+		background: url(./remove.svg) no-repeat 50% 50%;
+		background-size: 1rem 1rem;
+		cursor: pointer;
+		height: 100%;
+		aspect-ratio: 1;
+		opacity: 0.5;
+		transition: opacity 0.2s;
+	}
+
+	button:hover {
+		opacity: 1;
+	}
+
+	.saving {
+		opacity: 0.5;
+	}
+</style>
