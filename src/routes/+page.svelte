@@ -1,24 +1,69 @@
 <script>
+	import { enhance } from '$app/forms';
+	import { fly, slide } from 'svelte/transition';
 	export let data;
+	export let form;
+
+	let creating = false;
+	let deleting = [];
 </script>
 
 <div class="centered">
 	<h1>todos</h1>
-	<form method="post">
+	<form
+		method="post"
+		action="?/create"
+		use:enhance={() => {
+			creating = true;
+			return async ({ update }) => {
+				await update();
+				creating = false;
+			};
+		}}
+	>
 		<label>
 			Add a todo:
-			<input type="text" name="description" autocomplete="off" />
+			<input
+				disabled={creating}
+				type="text"
+				name="description"
+				value={form?.description ?? ''}
+				autocomplete="off"
+				required
+			/>
 		</label>
 	</form>
 </div>
 
 <ul class="todos">
-	{#each data.todos as todo (todo.id)}
-		<li>
-			{todo.description}
+	{#each data.todos.filter((todo) => !deleting.includes(todo.id)) as todo (todo.id)}
+		<li in:fly={{ y: 20 }} out:slide>
+			<form
+				method="post"
+				action="?/delete"
+				use:enhance={() => {
+					deleting = [...deleting, todo.id];
+					return async ({ update }) => {
+						await update();
+						deleting = deleting.filter((id) => id !== todo.id);
+					};
+				}}
+			>
+				<input type="hidden" name="id" value={todo.id} />
+				<span>{todo.description}</span>
+				<button aria-label="Mark as complete" />
+			</form>
 		</li>
 	{/each}
 </ul>
+
+{#if form?.error}
+	<p class="error">{form.error}</p>
+{/if}
+
+{#if creating}
+	<span class="saving">saving...</span>
+{/if}
 
 <style>
 	.centered {
@@ -36,6 +81,17 @@
 
 	span {
 		flex: 1;
+	}
+
+	.error {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		padding: 10px;
+		background-color: aquamarine;
+		border: 1px solid aqua;
+		border-radius: 6px;
 	}
 
 	button {
